@@ -1471,3 +1471,117 @@ loadConfigKeys()
 buildGui()
 loadConfigState()
 
+-- =================== MOBILE BUTTONS ===================
+task.spawn(function()
+	task.wait(1) -- wait for main GUI to load
+
+	local mobileGui = Instance.new("ScreenGui")
+	mobileGui.Name = "MobileButtons"
+	mobileGui.ResetOnSpawn = false
+	mobileGui.DisplayOrder = 20
+	mobileGui.IgnoreGuiInset = true
+	pcall(function() if syn and syn.protect_gui then syn.protect_gui(mobileGui) end end)
+	if not pcall(function() mobileGui.Parent = game:GetService("CoreGui") end) then
+		mobileGui.Parent = LP:WaitForChild("PlayerGui")
+	end
+
+	-- Outer rounded container (like your photo)
+	local container = Instance.new("Frame", mobileGui)
+	container.Size = UDim2.new(0, 220, 0, 220)
+	container.Position = UDim2.new(0, 12, 1, -240)
+	container.BackgroundColor3 = Color3.fromRGB(10, 10, 18)
+	container.BorderSizePixel = 0
+	Instance.new("UICorner", container).CornerRadius = UDim.new(0, 28)
+	local stroke = Instance.new("UIStroke", container)
+	stroke.Color = Color3.fromRGB(80, 80, 100)
+	stroke.Thickness = 2
+
+	-- Grid layout
+	local grid = Instance.new("UIGridLayout", container)
+	grid.CellSize = UDim2.new(0, 95, 0, 95)
+	grid.CellPadding = UDim2.new(0, 8, 0, 8)
+	grid.HorizontalAlignment = Enum.HorizontalAlignment.Center
+	grid.VerticalAlignment = Enum.VerticalAlignment.Center
+	grid.SortOrder = Enum.SortOrder.LayoutOrder
+
+	local pad = Instance.new("UIPadding", container)
+	pad.PaddingTop = UDim.new(0, 12)
+	pad.PaddingBottom = UDim.new(0, 12)
+	pad.PaddingLeft = UDim.new(0, 12)
+	pad.PaddingRight = UDim.new(0, 12)
+
+	local function makeBtn(labelText, order, callback)
+		local btn = Instance.new("TextButton", container)
+		btn.Size = UDim2.new(0, 95, 0, 95) -- sized by grid
+		btn.BackgroundColor3 = Color3.fromRGB(18, 18, 28)
+		btn.BorderSizePixel = 0
+		btn.Text = labelText
+		btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+		btn.Font = Enum.Font.GothamBlack
+		btn.TextSize = 15
+		btn.TextWrapped = true
+		btn.LayoutOrder = order
+		Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 16)
+
+		-- Press effect
+		btn.MouseButton1Down:Connect(function()
+			TS:Create(btn, TweenInfo.new(0.08), {BackgroundColor3 = Color3.fromRGB(50, 50, 80)}):Play()
+		end)
+		btn.MouseButton1Up:Connect(function()
+			TS:Create(btn, TweenInfo.new(0.08), {BackgroundColor3 = Color3.fromRGB(18, 18, 28)}):Play()
+		end)
+
+		btn.MouseButton1Click:Connect(callback)
+		return btn
+	end
+
+	-- AIMBOT (Auto Bat toggle)
+	makeBtn("AIMBOT", 1, function()
+		if not autoBatEnabled then
+			queueAutoBatStart()
+			if autoBatSetVisual then autoBatSetVisual(true) end
+		else
+			autoBatEnabled = false
+			disableAutoBat()
+			if autoBatSetVisual then autoBatSetVisual(false) end
+		end
+	end)
+
+	-- AUTO LEFT toggle
+	makeBtn("AUTO\nLEFT", 2, function()
+		autoLeftEnabled = not autoLeftEnabled
+		if autoLeftEnabled then
+			queueAutoLeftStart()
+		else
+			stopAutoLeft()
+		end
+		if autoLeftSetVisual then autoLeftSetVisual(autoLeftEnabled) end
+	end)
+
+	-- AUTO RIGHT toggle
+	makeBtn("AUTO\nRIGHT", 3, function()
+		autoRightEnabled = not autoRightEnabled
+		if autoRightEnabled then
+			queueAutoRightStart()
+		else
+			stopAutoRight()
+		end
+		if autoRightSetVisual then autoRightSetVisual(autoRightEnabled) end
+	end)
+
+	-- DROP BR
+	makeBtn("DROP\nBR", 4, function()
+		runDrop()
+	end)
+
+	-- CARRY SPEED toggle
+	makeBtn("CARRY\nSPEED", 5, function()
+		toggleCarryMode()
+	end)
+
+	-- INSTANT RESET
+	makeBtn("INSTA\nRESET", 6, function()
+		cursedInstaReset()
+	end)
+end)
+
