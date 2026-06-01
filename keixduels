@@ -1473,15 +1473,7 @@ loadConfigState()
 
 -- =================== MOBILE BUTTONS ===================
 task.spawn(function()
-    task.wait(1)
     local LP = game:GetService("Players").LocalPlayer
-
-    -- Helper to set speed (Adjust this if your game uses a custom speed function)
-    local function setPlayerSpeed(speed)
-        if LP.Character and LP.Character:FindFirstChild("Humanoid") then
-            LP.Character.Humanoid.WalkSpeed = speed
-        end
-    end
 
     local mobileGui = Instance.new("ScreenGui")
     mobileGui.Name = "MobileButtons"
@@ -1493,7 +1485,7 @@ task.spawn(function()
     local container = Instance.new("Frame")
     container.Parent = mobileGui
     container.Name = "MobilePanel"
-    container.Size = UDim2.new(0, 200, 0, 300)
+    container.Size = UDim2.new(0, 200, 0, 240) -- Slightly smaller to fit fewer buttons
     container.Position = UDim2.new(1, -210, 0.2, 0)
     container.BackgroundTransparency = 1 
 
@@ -1535,16 +1527,18 @@ task.spawn(function()
         autoRightEnabled = not autoRightEnabled
         if autoRightEnabled then queueAutoRightStart() else stopAutoRight() end 
     end)
-    makeBtn("TP DOWN", function() -- Add your specific TP logic here 
-    end)
     makeBtn("CARRY SPD", function() toggleCarryMode() end)
     
-    -- Using the variables you already have defined at the top
+    -- Using existing global variables
     makeBtn("LAGGER CARRY", function() 
-        setPlayerSpeed(LAGGER_CARRY_SPEED) 
+        if LP.Character and LP.Character:FindFirstChild("Humanoid") then
+            LP.Character.Humanoid.WalkSpeed = LAGGER_CARRY_SPEED
+        end
     end)
     
     makeBtn("LAGGER MODE", function() 
-        setPlayerSpeed(LAGGER_SPEED) 
+        if LP.Character and LP.Character:FindFirstChild("Humanoid") then
+            LP.Character.Humanoid.WalkSpeed = LAGGER_SPEED
+        end
     end)
 end)
