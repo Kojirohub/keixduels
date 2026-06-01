@@ -1376,7 +1376,7 @@ local function buildGui()
 		lbl.Size=UDim2.new(1,0,0,30)
 		lbl.Position=UDim2.new(0,0,0.5,-15)
 		lbl.BackgroundTransparency=1
-		lbl.Text="discord.gg/irsh"
+		lbl.Text="https://discord.gg/UGeMcVpKp"
 		lbl.TextColor3=GREEN
 		lbl.Font=Enum.Font.GothamBold
 		lbl.TextSize=16
@@ -1493,12 +1493,12 @@ task.spawn(function()
 		mobileGui.Parent = LP:WaitForChild("PlayerGui")
 	end
 
-	-- Right-side button holder
+	-- Right-side container (higher up so jump button stays visible)
 	local container = Instance.new("Frame")
 	container.Name = "ButtonContainer"
 	container.Parent = mobileGui
-	container.AnchorPoint = Vector2.new(1, 0.5)
-	container.Position = UDim2.new(1, -15, 0.5, 0)
+	container.AnchorPoint = Vector2.new(1, 0)
+	container.Position = UDim2.new(1, -10, 0.12, 0)
 	container.Size = UDim2.new(0, 120, 0, 450)
 	container.BackgroundTransparency = 1
 	container.BorderSizePixel = 0
@@ -1507,18 +1507,17 @@ task.spawn(function()
 	layout.Parent = container
 	layout.FillDirection = Enum.FillDirection.Vertical
 	layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-	layout.VerticalAlignment = Enum.VerticalAlignment.Center
-	layout.Padding = UDim.new(0, 10)
+	layout.Padding = UDim.new(0, 8)
 
 	local function makeBtn(labelText, callback)
 		local btn = Instance.new("TextButton")
 		btn.Parent = container
-		btn.Size = UDim2.new(0, 110, 0, 60)
+		btn.Size = UDim2.new(0, 110, 0, 55)
 		btn.BackgroundColor3 = Color3.fromRGB(18, 18, 28)
 		btn.BorderSizePixel = 0
 		btn.Text = labelText
-		btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-		btn.TextSize = 18
+		btn.TextColor3 = Color3.fromRGB(255,255,255)
+		btn.TextSize = 16
 		btn.TextWrapped = true
 		btn.Font = Enum.Font.GothamBlack
 		btn.AutoButtonColor = false
@@ -1528,19 +1527,15 @@ task.spawn(function()
 		corner.Parent = btn
 
 		btn.MouseButton1Down:Connect(function()
-			TS:Create(
-				btn,
-				TweenInfo.new(0.08),
-				{BackgroundColor3 = Color3.fromRGB(50, 50, 80)}
-			):Play()
+			TS:Create(btn, TweenInfo.new(0.08), {
+				BackgroundColor3 = Color3.fromRGB(50,50,80)
+			}):Play()
 		end)
 
 		btn.MouseButton1Up:Connect(function()
-			TS:Create(
-				btn,
-				TweenInfo.new(0.08),
-				{BackgroundColor3 = Color3.fromRGB(18, 18, 28)}
-			):Play()
+			TS:Create(btn, TweenInfo.new(0.08), {
+				BackgroundColor3 = Color3.fromRGB(18,18,28)
+			}):Play()
 		end)
 
 		btn.MouseButton1Click:Connect(callback)
@@ -1609,3 +1604,4 @@ task.spawn(function()
 		cursedInstaReset()
 	end)
 end)
+
