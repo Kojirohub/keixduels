@@ -784,7 +784,7 @@ local function toggleLaggerMode()
 end
 
 -- ============================================================
--- KEIX HUB V2.0 GUI
+-- KEIX AND MJ HUB V2.0 GUI
 -- ============================================================
 local function buildGui()
 	local GREEN       = Color3.fromRGB(0, 180, 0)
@@ -795,11 +795,11 @@ local function buildGui()
 	local TEXT        = Color3.fromRGB(230, 230, 230)
 	local BLACK       = Color3.fromRGB(5, 5, 5)
 
-	local old=game:GetService("CoreGui"):FindFirstChild("KeixHub");if old then old:Destroy() end
-	local pg=LP:FindFirstChild("PlayerGui");if pg then local o=pg:FindFirstChild("KeixHub");if o then o:Destroy() end end
+	local old=game:GetService("CoreGui"):FindFirstChild("KeixandMjHub");if old then old:Destroy() end
+	local pg=LP:FindFirstChild("PlayerGui");if pg then local o=pg:FindFirstChild("KeixandMjHub");if o then o:Destroy() end end
 
 	local gui=Instance.new("ScreenGui")
-	gui.Name="KeixHub";gui.ResetOnSpawn=false;gui.DisplayOrder=10;gui.IgnoreGuiInset=true
+	gui.Name="KeixandMjHub";gui.ResetOnSpawn=false;gui.DisplayOrder=10;gui.IgnoreGuiInset=true
 	pcall(function() if syn and syn.protect_gui then syn.protect_gui(gui) end end)
 	if not pcall(function() gui.Parent=game:GetService("CoreGui") end) then gui.Parent=LP:WaitForChild("PlayerGui") end
 
@@ -822,7 +822,7 @@ local function buildGui()
 		return stroke
 	end
 
-	-- Top Bar (Keix Menu) - stays visible when main is hidden
+	-- Top Bar (Keix And Mj Menu) - stays visible when main is hidden
 	local topBar=Instance.new("Frame",gui)
 	topBar.Name="TopBar"
 	topBar.Size=UDim2.new(0, 170, 0, 34)
@@ -835,7 +835,7 @@ local function buildGui()
 	local topLbl=Instance.new("TextLabel",topBar)
 	topLbl.Size=UDim2.new(1, 0, 1, 0)
 	topLbl.BackgroundTransparency=1
-	topLbl.Text="Keix Menu"
+	topLbl.Text="Keix And Mj Menu"
 	topLbl.TextColor3=GREEN
 	topLbl.Font=Enum.Font.GothamBold
 	topLbl.TextSize=17
@@ -899,7 +899,7 @@ local function buildGui()
 	ttl.Size=UDim2.new(0, 250, 1, 0)
 	ttl.Position=UDim2.new(0, 14, 0, 0)
 	ttl.BackgroundTransparency=1
-	ttl.Text="Keix Hub V2.0"
+	ttl.Text="Keix And Mj Hub V2.0"
 	ttl.TextColor3=GREEN
 	ttl.Font=Enum.Font.GothamBlack
 	ttl.TextSize=21
