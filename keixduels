@@ -1376,7 +1376,7 @@ local function buildGui()
 		lbl.Size=UDim2.new(1,0,0,30)
 		lbl.Position=UDim2.new(0,0,0.5,-15)
 		lbl.BackgroundTransparency=1
-		lbl.Text="https://discord.gg/UGeMcVpKp"
+		lbl.Text="discord.gg/irsh"
 		lbl.TextColor3=GREEN
 		lbl.Font=Enum.Font.GothamBold
 		lbl.TextSize=16
@@ -1493,55 +1493,24 @@ task.spawn(function()
 		mobileGui.Parent = LP:WaitForChild("PlayerGui")
 	end
 
-	-- Right-side container (higher up so jump button stays visible)
-	local container = Instance.new("Frame")
-	container.Name = "ButtonContainer"
-	container.Parent = mobileGui
-	container.AnchorPoint = Vector2.new(1, 0)
-	container.Position = UDim2.new(1, -10, 0.12, 0)
-	container.Size = UDim2.new(0, 120, 0, 450)
-	container.BackgroundTransparency = 1
-	container.BorderSizePixel = 0
+	-- Right-side button holder
+local container = Instance.new("Frame")
+container.Parent = mobileGui
+container.Name = "MobilePanel"
+container.Size = UDim2.new(0, 170, 0, 170)
+container.Position = UDim2.new(1, -178, 0.5, -85)
+container.BackgroundColor3 = Color3.fromRGB(10,10,10)
+container.BorderSizePixel = 0
 
-	local layout = Instance.new("UIListLayout")
-	layout.Parent = container
-	layout.FillDirection = Enum.FillDirection.Vertical
-	layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-	layout.Padding = UDim.new(0, 8)
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 18)
+corner.Parent = container
 
-	local function makeBtn(labelText, callback)
-		local btn = Instance.new("TextButton")
-		btn.Parent = container
-		btn.Size = UDim2.new(0, 110, 0, 55)
-		btn.BackgroundColor3 = Color3.fromRGB(18, 18, 28)
-		btn.BorderSizePixel = 0
-		btn.Text = labelText
-		btn.TextColor3 = Color3.fromRGB(255,255,255)
-		btn.TextSize = 16
-		btn.TextWrapped = true
-		btn.Font = Enum.Font.GothamBlack
-		btn.AutoButtonColor = false
-
-		local corner = Instance.new("UICorner")
-		corner.CornerRadius = UDim.new(0, 16)
-		corner.Parent = btn
-
-		btn.MouseButton1Down:Connect(function()
-			TS:Create(btn, TweenInfo.new(0.08), {
-				BackgroundColor3 = Color3.fromRGB(50,50,80)
-			}):Play()
-		end)
-
-		btn.MouseButton1Up:Connect(function()
-			TS:Create(btn, TweenInfo.new(0.08), {
-				BackgroundColor3 = Color3.fromRGB(18,18,28)
-			}):Play()
-		end)
-
-		btn.MouseButton1Click:Connect(callback)
-
-		return btn
-	end
+local stroke = Instance.new("UIStroke")
+stroke.Parent = container
+stroke.Color = Color3.fromRGB(235,235,235)
+stroke.Thickness = 1.5
+stroke.Transparency = 0.45
 
 	-- AIMBOT
 	makeBtn("AIMBOT", function()
@@ -1604,4 +1573,3 @@ task.spawn(function()
 		cursedInstaReset()
 	end)
 end)
-
