@@ -1472,6 +1472,7 @@ buildGui()
 loadConfigState()
 
 -- =================== MOBILE BUTTONS ===================
+-- =================== MOBILE BUTTONS ===================
 task.spawn(function()
     local LP = game:GetService("Players").LocalPlayer
 
@@ -1485,7 +1486,7 @@ task.spawn(function()
     local container = Instance.new("Frame")
     container.Parent = mobileGui
     container.Name = "MobilePanel"
-    container.Size = UDim2.new(0, 200, 0, 240) -- Slightly smaller to fit fewer buttons
+    container.Size = UDim2.new(0, 200, 0, 240)
     container.Position = UDim2.new(1, -210, 0.2, 0)
     container.BackgroundTransparency = 1 
 
@@ -1529,16 +1530,22 @@ task.spawn(function()
     end)
     makeBtn("CARRY SPD", function() toggleCarryMode() end)
     
-    -- Using existing global variables
+    -- FIXED LAGGER BUTTONS: These now call the existing logic functions
     makeBtn("LAGGER CARRY", function() 
-        if LP.Character and LP.Character:FindFirstChild("Humanoid") then
-            LP.Character.Humanoid.WalkSpeed = LAGGER_CARRY_SPEED
+        if not laggerToggled or laggerPhase ~= 2 then
+            laggerToggled = true
+            laggerPhase = 2
+            speedMode = false
+            if refreshSpeedModeLabel then refreshSpeedModeLabel() end
         end
     end)
     
     makeBtn("LAGGER MODE", function() 
-        if LP.Character and LP.Character:FindFirstChild("Humanoid") then
-            LP.Character.Humanoid.WalkSpeed = LAGGER_SPEED
+        if not laggerToggled or laggerPhase ~= 1 then
+            laggerToggled = true
+            laggerPhase = 1
+            speedMode = false
+            if refreshSpeedModeLabel then refreshSpeedModeLabel() end
         end
     end)
 end)
