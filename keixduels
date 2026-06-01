@@ -1473,110 +1473,78 @@ loadConfigState()
 
 -- =================== MOBILE BUTTONS ===================
 task.spawn(function()
-	task.wait(1)
-    
+    task.wait(1)
     local LP = game:GetService("Players").LocalPlayer
 
-	local mobileGui = Instance.new("ScreenGui")
-	mobileGui.Name = "MobileButtons"
-	mobileGui.ResetOnSpawn = false
-	mobileGui.DisplayOrder = 20
-	mobileGui.IgnoreGuiInset = true
+    -- Helper to set speed (Adjust this if your game uses a custom speed function)
+    local function setPlayerSpeed(speed)
+        if LP.Character and LP.Character:FindFirstChild("Humanoid") then
+            LP.Character.Humanoid.WalkSpeed = speed
+        end
+    end
 
-	pcall(function()
-		if syn and syn.protect_gui then
-			syn.protect_gui(mobileGui)
-		end
-	end)
+    local mobileGui = Instance.new("ScreenGui")
+    mobileGui.Name = "MobileButtons"
+    mobileGui.ResetOnSpawn = false
+    mobileGui.DisplayOrder = 20
+    mobileGui.IgnoreGuiInset = true
+    mobileGui.Parent = game:GetService("CoreGui")
 
-	if not pcall(function()
-		mobileGui.Parent = game:GetService("CoreGui")
-	end) then
-		mobileGui.Parent = LP:WaitForChild("PlayerGui")
-	end
+    local container = Instance.new("Frame")
+    container.Parent = mobileGui
+    container.Name = "MobilePanel"
+    container.Size = UDim2.new(0, 200, 0, 300)
+    container.Position = UDim2.new(1, -210, 0.2, 0)
+    container.BackgroundTransparency = 1 
 
-	-- Right-side button holder
-	local container = Instance.new("Frame")
-	container.Parent = mobileGui
-	container.Name = "MobilePanel"
-	container.Size = UDim2.new(0, 170, 0, 200) -- Increased height to fit buttons
-	container.Position = UDim2.new(1, -178, 0.5, -100)
-	container.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-	container.BorderSizePixel = 0
-	container.BackgroundTransparency = 0.3
+    local grid = Instance.new("UIGridLayout")
+    grid.Parent = container
+    grid.CellSize = UDim2.new(0, 90, 0, 60)
+    grid.CellPadding = UDim2.new(0, 10, 0, 10)
+    grid.FillDirection = Enum.FillDirection.Horizontal
+    grid.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    grid.SortOrder = Enum.SortOrder.LayoutOrder
 
-	local corner = Instance.new("UICorner")
-	corner.CornerRadius = UDim.new(0, 18)
-	corner.Parent = container
-
-	local stroke = Instance.new("UIStroke")
-	stroke.Parent = container
-	stroke.Color = Color3.fromRGB(235, 235, 235)
-	stroke.Thickness = 1.5
-	stroke.Transparency = 0.45
-
-	-- Add a Layout to stack buttons automatically
-	local layout = Instance.new("UIListLayout")
-	layout.Parent = container
-	layout.Padding = UDim.new(0, 5)
-	layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-	layout.VerticalAlignment = Enum.VerticalAlignment.Center
-    
-    -- Function to create buttons
     local function makeBtn(text, callback)
         local btn = Instance.new("TextButton")
         btn.Name = text
         btn.Text = text
-        btn.Size = UDim2.new(0.85, 0, 0, 25)
-        btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        btn.Font = Enum.Font.SourceSansBold
+        btn.TextSize = 14
+        btn.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
         btn.TextColor3 = Color3.new(1, 1, 1)
-        btn.Parent = container -- Now the buttons will appear!
+        btn.Parent = container
         
-        local btnCorner = Instance.new("UICorner")
-        btnCorner.CornerRadius = UDim.new(0, 6)
-        btnCorner.Parent = btn
+        local corner = Instance.new("UICorner")
+        corner.CornerRadius = UDim.new(0, 12)
+        corner.Parent = btn
         
         btn.MouseButton1Click:Connect(callback)
     end
 
-	-- AIMBOT
-	makeBtn("AIMBOT", function()
-		if not autoBatEnabled then
-			queueAutoBatStart()
-			if autoBatSetVisual then autoBatSetVisual(true) end
-		else
-			autoBatEnabled = false
-			disableAutoBat()
-			if autoBatSetVisual then autoBatSetVisual(false) end
-		end
-	end)
-
-	-- AUTO LEFT
-	makeBtn("AUTO LEFT", function()
-		autoLeftEnabled = not autoLeftEnabled
-		if autoLeftEnabled then queueAutoLeftStart() else stopAutoLeft() end
-		if autoLeftSetVisual then autoLeftSetVisual(autoLeftEnabled) end
-	end)
-
-	-- AUTO RIGHT
-	makeBtn("AUTO RIGHT", function()
-		autoRightEnabled = not autoRightEnabled
-		if autoRightEnabled then queueAutoRightStart() else stopAutoRight() end
-		if autoRightSetVisual then autoRightSetVisual(autoRightEnabled) end
-	end)
-
-	-- DROP BR
-	makeBtn("DROP BR", function()
-		runDrop()
-	end)
-
-	-- CARRY SPEED
-	makeBtn("CARRY SPEED", function()
-		toggleCarryMode()
-	end)
-
-	-- INSTA RESET
-	makeBtn("INSTA RESET", function()
-		cursedInstaReset()
-	end)
+    -- Buttons
+    makeBtn("DROP BR", function() runDrop() end)
+    makeBtn("AUTO LEFT", function() 
+        autoLeftEnabled = not autoLeftEnabled
+        if autoLeftEnabled then queueAutoLeftStart() else stopAutoLeft() end 
+    end)
+    makeBtn("BAT AIMBOT", function() 
+        if not autoBatEnabled then queueAutoBatStart() else disableAutoBat() end 
+    end)
+    makeBtn("AUTO RIGHT", function() 
+        autoRightEnabled = not autoRightEnabled
+        if autoRightEnabled then queueAutoRightStart() else stopAutoRight() end 
+    end)
+    makeBtn("TP DOWN", function() -- Add your specific TP logic here 
+    end)
+    makeBtn("CARRY SPD", function() toggleCarryMode() end)
+    
+    -- Using the variables you already have defined at the top
+    makeBtn("LAGGER CARRY", function() 
+        setPlayerSpeed(LAGGER_CARRY_SPEED) 
+    end)
+    
+    makeBtn("LAGGER MODE", function() 
+        setPlayerSpeed(LAGGER_SPEED) 
+    end)
 end)
