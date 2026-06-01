@@ -1472,7 +1472,6 @@ buildGui()
 loadConfigState()
 
 -- =================== MOBILE BUTTONS ===================
--- =================== MOBILE BUTTONS ===================
 task.spawn(function()
     local LP = game:GetService("Players").LocalPlayer
 
@@ -1486,7 +1485,8 @@ task.spawn(function()
     local container = Instance.new("Frame")
     container.Parent = mobileGui
     container.Name = "MobilePanel"
-    container.Size = UDim2.new(0, 200, 0, 240)
+    -- Increased height to 350 to ensure all buttons fit
+    container.Size = UDim2.new(0, 200, 0, 350) 
     container.Position = UDim2.new(1, -210, 0.2, 0)
     container.BackgroundTransparency = 1 
 
@@ -1530,7 +1530,10 @@ task.spawn(function()
     end)
     makeBtn("CARRY SPD", function() toggleCarryMode() end)
     
-    -- FIXED LAGGER BUTTONS: These now call the existing logic functions
+    -- The missing button!
+    makeBtn("INSTA RESET", function() cursedInstaReset() end)
+    
+    -- Lagger Buttons
     makeBtn("LAGGER CARRY", function() 
         if not laggerToggled or laggerPhase ~= 2 then
             laggerToggled = true
