@@ -1,4 +1,39 @@
+local PlayerGui = LP:WaitForChild("PlayerGui")
 repeat task.wait() until game:IsLoaded()
+
+-- 2. Create the Black Screen Intro
+local IntroGui = Instance.new("ScreenGui", PlayerGui)
+IntroGui.Name = "IntroGui"
+IntroGui.IgnoreGuiInset = true
+
+local BlackFrame = Instance.new("Frame", IntroGui)
+BlackFrame.Size = UDim2.new(1, 0, 1, 0)
+BlackFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+BlackFrame.ZIndex = 999
+
+local Text = Instance.new("TextLabel", BlackFrame)
+Text.Size = UDim2.new(1, 0, 1, 0)
+Text.BackgroundTransparency = 1
+Text.Text = "keix and mj hub"
+Text.TextColor3 = Color3.fromRGB(255, 255, 255)
+Text.Font = Enum.Font.GothamBold
+Text.TextSize = 30
+
+-- 3. Setup and Play Audio
+local Sound = Instance.new("Sound", game:GetService("SoundService"))
+Sound.SoundId = "rbxassetid://116197983114890"
+Sound.Volume = 1
+Sound:Play()
+
+-- 4. Visual Cleanup (2 seconds)
+task.wait(3)
+IntroGui:Destroy()
+
+-- 5. Audio Cleanup (Wait until 7 seconds total)
+task.wait(5) -- Remaining time to reach 7 seconds
+Sound:Stop()
+Sound:Destroy()
+
 local Players,RunService,UIS,TS,Lighting,HS = game:GetService("Players"),game:GetService("RunService"),game:GetService("UserInputService"),game:GetService("TweenService"),game:GetService("Lighting"),game:GetService("HttpService")
 local LP = Players.LocalPlayer
 local NS,CS = 60,30
