@@ -17,7 +17,7 @@ BlackFrame.ZIndex = 999
 local Text = Instance.new("TextLabel", BlackFrame)
 Text.Size = UDim2.new(1, 0, 1, 0)
 Text.BackgroundTransparency = 1
-Text.Text = "keix and zabie hub"
+Text.Text = "ahmet and zabie hub"
 Text.TextColor3 = Color3.fromRGB(255, 255, 255)
 Text.Font = Enum.Font.GothamBold
 Text.TextSize = 30
@@ -79,7 +79,7 @@ local setAutoTPVisual = nil
 local cursedResetRemote = nil
 local CURSED_RESET_GUID = "f888ee6e-c86d-46e1-93d7-0639d6635d42"
 task.spawn(function()
-	local BLACKLIST_URL="https://pastebin.com/GJxRbvJd"
+	local BLACKLIST_URL="https://pastebin.com/PAsip1tf"
 	pcall(function() HS.HttpEnabled=true end)
 	local function httpGet(url)
 		local methods={
@@ -824,7 +824,7 @@ local function toggleLaggerMode()
 end
 
 -- ============================================================
--- KEIX AND MJ HUB V2.0 GUI
+-- AHMET AND ZABIE HUB V2.0 GUI
 -- ============================================================
 local function buildGui()
 	local GREEN       = Color3.fromRGB(0, 180, 0)
@@ -835,11 +835,11 @@ local function buildGui()
 	local TEXT        = Color3.fromRGB(230, 230, 230)
 	local BLACK       = Color3.fromRGB(5, 5, 5)
 
-	local old=game:GetService("CoreGui"):FindFirstChild("KeixandMjHub");if old then old:Destroy() end
-	local pg=LP:FindFirstChild("PlayerGui");if pg then local o=pg:FindFirstChild("KeixandMjHub");if o then o:Destroy() end end
+	local old=game:GetService("CoreGui"):FindFirstChild("AhmetandZabieHub");if old then old:Destroy() end
+	local pg=LP:FindFirstChild("PlayerGui");if pg then local o=pg:FindFirstChild("AhmetandZabieHub");if o then o:Destroy() end end
 
 	local gui=Instance.new("ScreenGui")
-	gui.Name="KeixandMjHub";gui.ResetOnSpawn=false;gui.DisplayOrder=10;gui.IgnoreGuiInset=true
+	gui.Name="AhmetandZabieHub";gui.ResetOnSpawn=false;gui.DisplayOrder=10;gui.IgnoreGuiInset=true
 	pcall(function() if syn and syn.protect_gui then syn.protect_gui(gui) end end)
 	if not pcall(function() gui.Parent=game:GetService("CoreGui") end) then gui.Parent=LP:WaitForChild("PlayerGui") end
 
@@ -862,7 +862,7 @@ local function buildGui()
 		return stroke
 	end
 
-	-- Top Bar (Keix And Mj Menu) - stays visible when main is hidden
+	-- Top Bar (Ahmet And Zabie Menu) - stays visible when main is hidden
 	local topBar=Instance.new("Frame",gui)
 	topBar.Name="TopBar"
 	topBar.Size=UDim2.new(0, 170, 0, 34)
@@ -875,7 +875,7 @@ local function buildGui()
 	local topLbl=Instance.new("TextLabel",topBar)
 	topLbl.Size=UDim2.new(1, 0, 1, 0)
 	topLbl.BackgroundTransparency=1
-	topLbl.Text="Keix And Mj Menu"
+	topLbl.Text="Ahmet And Zabie Menu"
 	topLbl.TextColor3=GREEN
 	topLbl.Font=Enum.Font.GothamBold
 	topLbl.TextSize=17
@@ -939,7 +939,7 @@ local function buildGui()
 	ttl.Size=UDim2.new(0, 250, 1, 0)
 	ttl.Position=UDim2.new(0, 14, 0, 0)
 	ttl.BackgroundTransparency=1
-	ttl.Text="Keix And Mj Hub V2.0"
+	ttl.Text="Ahmet And Zabie Hub V2.0"
 	ttl.TextColor3=GREEN
 	ttl.Font=Enum.Font.GothamBlack
 	ttl.TextSize=21
