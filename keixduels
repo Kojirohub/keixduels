@@ -1,11 +1,13 @@
 local LP = game:GetService("Players").LocalPlayer
-
 repeat task.wait() until game:IsLoaded()
 
--- 2. Create the Black Screen Intro
 local IntroGui = Instance.new("ScreenGui")
-pcall(function() IntroGui.Parent = game:GetService("CoreGui") end)
-if not IntroGui.Parent then IntroGui.Parent = LP:WaitForChild("PlayerGui") end
+IntroGui.Name = "IntroGui"
+IntroGui.IgnoreGuiInset = true
+IntroGui.ResetOnSpawn = false
+
+local ok = pcall(function() IntroGui.Parent = game:GetService("CoreGui") end)
+if not ok then IntroGui.Parent = LP:WaitForChild("PlayerGui") end
 
 local BlackFrame = Instance.new("Frame", IntroGui)
 BlackFrame.Size = UDim2.new(1, 0, 1, 0)
