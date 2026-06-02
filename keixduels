@@ -1,4 +1,5 @@
 local PlayerGui = LP:WaitForChild("PlayerGui")
+
 repeat task.wait() until game:IsLoaded()
 
 -- 2. Create the Black Screen Intro
