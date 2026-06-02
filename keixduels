@@ -33,7 +33,7 @@ task.wait(0.1)
 Sound.TimePosition = 7
 
 task.spawn(function()
-    task.wait(7)
+    task.wait(3)
     IntroGui:Destroy()
     task.wait(5)
     Sound:Stop()
