@@ -29,7 +29,7 @@ Sound.Volume = 1
 Sound:Play()
 
 -- 4. Visual Cleanup (2 seconds)
-task.wait(3)
+task.wait(7)
 IntroGui:Destroy()
 
 -- 5. Audio Cleanup (Wait until 7 seconds total)
