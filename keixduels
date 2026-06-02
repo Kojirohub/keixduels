@@ -27,18 +27,17 @@ Text.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
 
 -- 3. Setup and Play Audio
 local Sound = Instance.new("Sound", game:GetService("SoundService"))
-Sound.SoundId = "rbxassetid://116197983114890"
+Sound.SoundId = "rbxassetid://76650356472656"
 Sound.Volume = 1
 Sound:Play()
 
--- 4. Visual Cleanup (2 seconds)
-task.wait(7)
-IntroGui:Destroy()
-
--- 5. Audio Cleanup (Wait until 7 seconds total)
-task.wait(5) -- Remaining time to reach 7 seconds
-Sound:Stop()
-Sound:Destroy()
+task.spawn(function()
+    task.wait(7)
+    IntroGui:Destroy()
+    task.wait(5)
+    Sound:Stop()
+    Sound:Destroy()
+end)
 
 local Players,RunService,UIS,TS,Lighting,HS = game:GetService("Players"),game:GetService("RunService"),game:GetService("UserInputService"),game:GetService("TweenService"),game:GetService("Lighting"),game:GetService("HttpService")
 local NS,CS = 60,30
