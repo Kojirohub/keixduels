@@ -1,4 +1,4 @@
-local PlayerGui = LP:WaitForChild("PlayerGui")
+local LP = game:GetService("Players").LocalPlayer
 
 repeat task.wait() until game:IsLoaded()
 
@@ -36,7 +36,6 @@ Sound:Stop()
 Sound:Destroy()
 
 local Players,RunService,UIS,TS,Lighting,HS = game:GetService("Players"),game:GetService("RunService"),game:GetService("UserInputService"),game:GetService("TweenService"),game:GetService("Lighting"),game:GetService("HttpService")
-local LP = Players.LocalPlayer
 local NS,CS = 60,30
 local LAGGER_SPEED = 15
 local LAGGER_CARRY_SPEED = 24.5
