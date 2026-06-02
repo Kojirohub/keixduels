@@ -25,11 +25,11 @@ Text.ZIndex = 1000
 Text.TextStrokeTransparency = 0
 Text.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
 
--- 3. Setup and Play Audio
 local Sound = Instance.new("Sound", game:GetService("SoundService"))
 Sound.SoundId = "rbxassetid://76650356472656"
 Sound.Volume = 1
 Sound:Play()
+task.wait(0.1)
 Sound.TimePosition = 7
 
 task.spawn(function()
