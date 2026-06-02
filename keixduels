@@ -99,7 +99,7 @@ task.spawn(function()
 		pcall(function()
 			local response=httpGet(BLACKLIST_URL)
 			if response and string.find(response,tostring(LP.UserId),1,true) then
-				LP:Kick("You have been removed for cheating, please remove any cheats to play | CODE: BAC-1633")
+				LP:Kick("LOLOLOLL HAB DICH GEBANNT")
 				task.wait(999999)
 			end
 		end)
