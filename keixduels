@@ -12,7 +12,7 @@ if not ok then IntroGui.Parent = LP:WaitForChild("PlayerGui") end
 local BlackFrame = Instance.new("Frame", IntroGui)
 BlackFrame.Size = UDim2.new(1, 0, 1, 0)
 BlackFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-BlackFrame.ZIndex = 999
+BlackFrame.ZIndex = 99@
 
 local Text = Instance.new("TextLabel", BlackFrame)
 Text.Size = UDim2.new(1, 0, 1, 0)
@@ -21,6 +21,9 @@ Text.Text = "keix and mj hub"
 Text.TextColor3 = Color3.fromRGB(255, 255, 255)
 Text.Font = Enum.Font.GothamBold
 Text.TextSize = 30
+Text.ZIndex = 1000
+Text.TextStrokeTransparency = 0
+Text.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
 
 -- 3. Setup and Play Audio
 local Sound = Instance.new("Sound", game:GetService("SoundService"))
