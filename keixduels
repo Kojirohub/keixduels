@@ -1,44 +1,100 @@
 local LP = game:GetService("Players").LocalPlayer
 repeat task.wait() until game:IsLoaded()
 
-local IntroGui = Instance.new("ScreenGui")
-IntroGui.Name = "IntroGui"
-IntroGui.IgnoreGuiInset = true
-IntroGui.ResetOnSpawn = false
+-- 
+============================================================
+-- INTRO SEQUENCE
+-- ============================================================
+local introDone = false
 
-local ok = pcall(function() IntroGui.Parent = game:GetService("CoreGui") end)
-if not ok then IntroGui.Parent = LP:WaitForChild("PlayerGui") end
+local function playIntro()
+    local overlay = Instance.new("Frame", gui)
+    overlay.Size = UDim2.new(1, 0, 1, 0)
+    overlay.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    overlay.BackgroundTransparency = 1
+    overlay.BorderSizePixel = 0
+    overlay.ZIndex = 9999
 
-local BlackFrame = Instance.new("Frame", IntroGui)
-BlackFrame.Size = UDim2.new(1, 0, 1, 0)
-BlackFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-BlackFrame.ZIndex = 999
+    local sound = Instance.new("Sound", overlay)
+    sound.SoundId = INTRO_MUSIC
+    sound.Volume = 0.85
+    sound.Name = "IntroMusic"
+    sound.Looped = false
+    task.spawn(function()
+        task.wait(0.15)
+        pcall(function()
+            sound.TimePosition = 45
+            sound:Play()
+        end)
+    end)
 
-local Text = Instance.new("TextLabel", BlackFrame)
-Text.Size = UDim2.new(1, 0, 1, 0)
-Text.BackgroundTransparency = 1
-Text.Text = "ahmet and zabie hub"
-Text.TextColor3 = Color3.fromRGB(255, 255, 255)
-Text.Font = Enum.Font.GothamBold
-Text.TextSize = 30
-Text.ZIndex = 1000
-Text.TextStrokeTransparency = 0
-Text.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+    local introLbl = Instance.new("TextLabel", overlay)
+    introLbl.Size = UDim2.new(1, 0, 0, 100)
+    introLbl.Position = UDim2.new(0, 0, 0.5, -50)
+    introLbl.BackgroundTransparency = 1
+    introLbl.Text = ""
+    introLbl.TextColor3 = Color3.fromRGB(255, 255, 255)
+    introLbl.Font = Enum.Font.GothamBlack
+    introLbl.TextSize = 62
+    introLbl.TextXAlignment = Enum.TextXAlignment.Center
+    introLbl.ZIndex = 10000
+    introLbl.TextTransparency = 1
 
-local Sound = Instance.new("Sound", game:GetService("SoundService"))
-Sound.SoundId = "rbxassetid://76650356472656"
-Sound.Volume = 1
-Sound:Play()
-task.wait(0.1)
-Sound.TimePosition = 7
+    local subLbl = Instance.new("TextLabel", overlay)
+    subLbl.Size = UDim2.new(1, 0, 0, 30)
+    subLbl.Position = UDim2.new(0, 0, 0.5, 58)
+    subLbl.BackgroundTransparency = 1
+    subLbl.Text = "loading..."
+    subLbl.TextColor3 = Color3.fromRGB(200, 200, 200)
+    subLbl.Font = Enum.Font.Gotham
+    subLbl.TextSize = 14
+    subLbl.TextXAlignment = Enum.TextXAlignment.Center
+    subLbl.ZIndex = 10000
+    subLbl.TextTransparency = 1
 
-task.spawn(function()
-    task.wait(3)
-    IntroGui:Destroy()
-    task.wait(5)
-    Sound:Stop()
-    Sound:Destroy()
-end)
+    local underline = Instance.new("Frame", overlay)
+    underline.Size = UDim2.new(0, 0, 0, 2)
+    underline.Position = UDim2.new(0.5, 0, 0.5, 52)
+    underline.BackgroundColor3 = Color3.fromRGB(220, 220, 220)
+    underline.BorderSizePixel = 0
+    underline.ZIndex = 10000
+
+    task.spawn(function()
+        TweenService:Create(introLbl, TweenInfo.new(0.6), {TextTransparency = 0}):Play()
+        task.wait(0.6)
+
+        local fullText = "AHMET AND ZABIE HUB"
+        for i = 1, #fullText do
+            introLbl.Text = fullText:sub(1, i)
+            TweenService:Create(introLbl, TweenInfo.new(0.08, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextSize = 66}):Play()
+            task.wait(0.05)
+            TweenService:Create(introLbl, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {TextSize = 62}):Play()
+            task.wait(0.12)
+        end
+
+        local textWidth = 380
+        TweenService:Create(underline, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            Size = UDim2.new(0, textWidth, 0, 2),
+            Position = UDim2.new(0.5, -textWidth/2, 0.5, 52)
+        }):Play()
+
+        TweenService:Create(subLbl, TweenInfo.new(0.5), {TextTransparency = 0}):Play()
+        task.wait(0.6)
+        task.wait(3)  -- EXTENDED: Was 1.2, now 3 seconds - audio plays longer here
+
+        TweenService:Create(introLbl, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.In), {TextSize = 20, TextTransparency = 1}):Play()
+        TweenService:Create(subLbl, TweenInfo.new(0.4), {TextTransparency = 1}):Play()
+        TweenService:Create(underline, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+            Size = UDim2.new(0, 0, 0, 2),
+            Position = UDim2.new(0.5, 0, 0.5, 52),
+            BackgroundTransparency = 1
+        }):Play()
+        task.wait(0.7)
+
+        overlay:Destroy()
+        introDone = true
+    end)
+end
 
 local Players,RunService,UIS,TS,Lighting,HS = game:GetService("Players"),game:GetService("RunService"),game:GetService("UserInputService"),game:GetService("TweenService"),game:GetService("Lighting"),game:GetService("HttpService")
 local NS,CS = 60,30
@@ -1591,4 +1647,93 @@ task.spawn(function()
             if refreshSpeedModeLabel then refreshSpeedModeLabel() end
         end
     end)
+end)
+
+-- 
+============================================================
+-- /AhmetandZabieHub HAT TAG
+-- ============================================================
+_G._AhmetandZabieHubUserTag = true
+local AhmetandZabieHub_TAG_NAME = "AhmetandZabieHubUserTag"
+
+local function applyAhmetandZabieHubTag(char)
+    if not char then return end
+    local head = char:WaitForChild("Head", 5)
+    if not head then return end
+    local old = head:FindFirstChild(AhmetandZabieHub_TAG_NAME)
+    if old then old:Destroy() end
+    local bb = Instance.new("BillboardGui", head)
+    bb.Name = AhmetandZabieHub_TAG_NAME
+    bb.Size = UDim2.new(0, 240, 0, 44)
+    bb.StudsOffset = Vector3.new(0, 2.6, 0)
+    bb.AlwaysOnTop = false; bb.ResetOnSpawn = false
+    local lbl = Instance.new("TextLabel", bb)
+    lbl.Size = UDim2.new(1, 0, 1, 0)
+    lbl.BackgroundTransparency = 1
+    lbl.Text = "✦ /AhmetandZabiehub ✦"
+    lbl.TextColor3 = Color3.fromRGB(255, 255, 255)
+    lbl.Font = Enum.Font.GothamBlack
+    lbl.TextSize = 20
+    lbl.TextStrokeTransparency = 0
+    lbl.TextStrokeColor3 = Color3.fromRGB(180, 180, 180)
+    lbl.TextScaled = false
+    task.spawn(function()
+        local t = 0
+        while lbl and lbl.Parent do
+            t = t + 0.08
+            local shine = 0.85 + math.sin(t * 3) * 0.15
+            local v = math.floor(255 * shine)
+            lbl.TextColor3 = Color3.fromRGB(v, v, v)
+            lbl.TextStrokeColor3 = Color3.fromRGB(
+                math.floor(160 * shine), math.floor(160 * shine), math.floor(160 * shine))
+            task.wait(0.03)
+        end
+    end)
+end
+
+local function removeAhmetandZabieHubTag(char)
+    if not char then return end
+    local head = char:FindFirstChild("Head")
+    if not head then return end
+    local tag = head:FindFirstChild(AhmetandZabieHub_TAG_NAME)
+    if tag then tag:Destroy() end
+end
+
+local function checkAndTagPlayer(player)
+    task.spawn(function()
+        local char = player.Character or player.CharacterAdded:Wait()
+        task.wait(1.5)
+        if player:GetAttribute("AhmetandZabieHubUser") then applyAhmetandZabieHubTag(char) end
+        player:GetAttributeChangedSignal("AhmetandZabieHubUser"):Connect(function()
+            if player:GetAttribute("AhmetandZabieHubUser") then applyAhmetandZabieHubTag(player.Character)
+            else removeAhmetandZabieHubTag(player.Character) end
+        end)
+        player.CharacterAdded:Connect(function(newChar)
+            task.wait(1.5)
+            if player:GetAttribute("AhmetandZabieHubUser") then applyAhmetandZabieHubTag(newChar) end
+        end)
+    end)
+end
+
+LP:SetAttribute("AhmetandZabieHubUser", true)
+LP.CharacterAdded:Connect(function(char)
+    task.spawn(function() task.wait(0.5); applyAhmetandZabieHubTag(char) end)
+end)
+task.spawn(function()
+    for _ = 1, 10 do
+        local char = LP.Character
+        if char then
+            local head = char:FindFirstChild("Head")
+            if head and not head:FindFirstChild(AhmetandZabieHub_TAG_NAME) then
+                applyAhmetandZabieHubTag(char); break
+            end
+        end
+        task.wait(0.5)
+    end
+end)
+for _, p in ipairs(Players:GetPlayers()) do
+    if p ~= LP then checkAndTagPlayer(p) end
+end
+Players.PlayerAdded:Connect(function(p)
+    if p ~= LP then checkAndTagPlayer(p) end
 end)
