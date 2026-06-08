@@ -27,7 +27,7 @@ local function playIntro(gui)
     introLbl.Size = UDim2.new(1, 0, 0, 100)
     introLbl.Position = UDim2.new(0, 0, 0.5, -50)
     introLbl.BackgroundTransparency = 1
-    introLbl.Text = ""
+    introLbl.Text = "ahmet and zabie hub"
     introLbl.TextColor3 = Color3.fromRGB(255, 255, 255)
     introLbl.Font = Enum.Font.GothamBlack
     introLbl.TextSize = 62
@@ -1487,7 +1487,8 @@ local function buildGui()
 	end)
 
 	switchTab("Combat")
-end
+	playIntro(gui)
+end  
 
 local _savedCfg = nil
 local function loadConfigKeys()
@@ -1710,12 +1711,5 @@ Players.PlayerAdded:Connect(function(p)
 end)
 
 loadConfigKeys()
-
--- Capture the return value of buildGui()
-local myGui = buildGui() 
-
+buildGui()
 loadConfigState()
-
--- Use the captured 'myGui' variable instead of the non-existent 'ScreenGui'
-myGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-playIntro(myGui)
