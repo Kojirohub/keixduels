@@ -1521,7 +1521,7 @@ task.spawn(function()
     mobileGui.ResetOnSpawn = false
     mobileGui.DisplayOrder = 20
     mobileGui.IgnoreGuiInset = true
-    mobileGui.Parent = game:GetService("CoreGui")
+    mobileGui.Parent = gethui and gethui() or LP:WaitForChild("PlayerGui")
 
     local container = Instance.new("Frame")
     container.Parent = mobileGui
