@@ -1530,7 +1530,7 @@ task.spawn(function()
     container.Size = UDim2.new(0, 200, 0, 250)
     container.BackgroundTransparency = 1
     container.AnchorPoint = Vector2.new(1, 1)
-    container.Position = UDim2.new(1, -10, 1, -100)
+    container.Position = UDim2.new(1, -10, 1, -125)
 
     local grid = Instance.new("UIGridLayout")
     grid.Parent = container
