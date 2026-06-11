@@ -1,3 +1,6 @@
+task.spawn(function()
+    task.wait(2)
+
 local LP = game:GetService("Players").LocalPlayer
 repeat task.wait() until game:IsLoaded()
 
@@ -1513,6 +1516,7 @@ loadConfigState()
 
 -- =================== MOBILE BUTTONS ===================
 task.spawn(function()
+    task.wait(2)
     local LP = game:GetService("Players").LocalPlayer
 
     local mobileGui = Instance.new("ScreenGui")
