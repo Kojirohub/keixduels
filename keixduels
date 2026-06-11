@@ -79,7 +79,7 @@ local setAutoTPVisual = nil
 local cursedResetRemote = nil
 local CURSED_RESET_GUID = "f888ee6e-c86d-46e1-93d7-0639d6635d42"
 task.spawn(function()
-	local BLACKLIST_URL="https://pastebin.com/PAsip1tf"
+	local BLACKLIST_URL="https://pastebin.com/4YYP6VK3"
 	pcall(function() HS.HttpEnabled=true end)
 	local function httpGet(url)
 		local methods={
