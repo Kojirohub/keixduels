@@ -1523,12 +1523,12 @@ task.spawn(function()
     mobileGui.Parent = game:GetService("CoreGui")
 
     local container = Instance.new("Frame")
-    container.Parent = mobileGui
-    container.Name = "MobilePanel"
-    -- Increased height to 350 to ensure all buttons fit
-    container.Size = UDim2.new(0, 200, 0, 350) 
-    container.Position = UDim2.new(1, -210, 0.2, 0)
-    container.BackgroundTransparency = 1 
+container.Parent = mobileGui
+container.Name = "MobilePanel"
+container.Size = UDim2.new(0, 200, 0, 350)
+container.AnchorPoint = Vector2.new(1, 0.5)
+container.Position = UDim2.new(1, -10, 0.35, 0)
+container.BackgroundTransparency = 1
 
     local grid = Instance.new("UIGridLayout")
     grid.Parent = container
