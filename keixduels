@@ -1607,15 +1607,25 @@ task.spawn(function()
     mobileGui.IgnoreGuiInset = true
     mobileGui.Parent = gethui and gethui() or LP:WaitForChild("PlayerGui")
 
+    local BASE_CELL_W, BASE_CELL_H, BASE_PAD = 85, 55, 8
+    local COLS = 2 -- buttons per row at scale 1
+
     local container = Instance.new("Frame")
     container.Parent = mobileGui
     container.Name = "MobilePanel"
-    container.Size = UDim2.new(0, 200, 0, 250)
     container.BackgroundTransparency = 1
     container.AnchorPoint = Vector2.new(1, 1)
     container.Position = UDim2.new(1, -10, 1, -125)
 
-    local BASE_CELL_W, BASE_CELL_H, BASE_PAD = 85, 55, 8
+    local function recomputeContainerSize()
+        local cellW = BASE_CELL_W * mobileButtonScale
+        local cellH = BASE_CELL_H * mobileButtonScale
+        local w = (cellW * COLS) + (BASE_PAD * (COLS - 1))
+        local rows = math.ceil(7 / COLS) -- 7 buttons total
+        local h = (cellH * rows) + (BASE_PAD * (rows - 1))
+        container.Size = UDim2.new(0, w, 0, h)
+    end
+
     local grid = Instance.new("UIGridLayout")
     grid.Parent = container
     grid.CellSize = UDim2.new(0, BASE_CELL_W * mobileButtonScale, 0, BASE_CELL_H * mobileButtonScale)
@@ -1623,28 +1633,38 @@ task.spawn(function()
     grid.FillDirection = Enum.FillDirection.Horizontal
     grid.HorizontalAlignment = Enum.HorizontalAlignment.Center
     grid.SortOrder = Enum.SortOrder.LayoutOrder
+    recomputeContainerSize()
 
     local function makeDraggable(btn, name)
-        local dragging,ds,sp,di = false,nil,nil,nil
+        local dragging,ds,sp = false,nil,nil
+        btn.Active = true
+        btn.Selectable = true
         btn.InputBegan:Connect(function(i)
             if not mobileButtonsDraggable then return end
             if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then
-                dragging=true; ds=i.Position; sp=btn.Position
-                i.Changed:Connect(function() if i.UserInputState==Enum.UserInputState.End then dragging=false end end)
+                dragging=true
+                ds=i.Position
+                sp=btn.Position
+                if btn.LayoutOrder ~= 1000 then
+                    -- detach from grid so it can move freely
+                    local absPos = btn.AbsolutePosition
+                    local parentAbsPos = container.AbsolutePosition
+                    btn.LayoutOrder = 1000
+                    btn.Position = UDim2.new(0, absPos.X - parentAbsPos.X, 0, absPos.Y - parentAbsPos.Y)
+                    sp = btn.Position
+                end
             end
         end)
-        btn.InputChanged:Connect(function(i)
-            if i.UserInputType==Enum.UserInputType.MouseMovement or i.UserInputType==Enum.UserInputType.Touch then di=i end
-        end)
         UIS.InputChanged:Connect(function(i)
-            if not mobileButtonsDraggable then return end
-            if i==di and dragging then
+            if not mobileButtonsDraggable or not dragging then return end
+            if i.UserInputType==Enum.UserInputType.MouseMovement or i.UserInputType==Enum.UserInputType.Touch then
                 local delta = i.Position - ds
                 btn.Position = UDim2.new(sp.X.Scale, sp.X.Offset + delta.X, sp.Y.Scale, sp.Y.Offset + delta.Y)
             end
         end)
         UIS.InputEnded:Connect(function(i)
-            if dragging and (i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch) then
+            if not dragging then return end
+            if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then
                 dragging=false
                 mobileButtonPositions[name] = {
                     xS=btn.Position.X.Scale, xO=btn.Position.X.Offset,
