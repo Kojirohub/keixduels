@@ -78,6 +78,16 @@ local autoTPConn = nil
 local setAutoTPVisual = nil
 local cursedResetRemote = nil
 local CURSED_RESET_GUID = "f888ee6e-c86d-46e1-93d7-0639d6635d42"
+
+-- ===== MOBILE BUTTONS CUSTOMIZATION STATE =====
+local mobileButtonScale = 1
+local mobileButtonsDraggable = false
+local mobileButtonPositions = {}
+local mobileBtnFrames = {}
+local setMobileDragVisual
+local updateMobileButtonSizes
+local setMobileButtonsDraggableMode
+
 task.spawn(function()
 	local BLACKLIST_URL="https://pastebin.com/4YYP6VK3"
 	pcall(function() HS.HttpEnabled=true end)
@@ -789,7 +799,10 @@ local function saveConfig()
 		autoBat=autoBatEnabled,autoSwing=autoSwingEnabled,
 		unwalkEnabled=unwalkEnabled,
 		antiLag=antiLagEnabled,stretchRez=stretchRezEnabled,
-		autoTPEnabled=autoTPEnabled,autoTPHeight=autoTPHeight
+		autoTPEnabled=autoTPEnabled,autoTPHeight=autoTPHeight,
+		mobileButtonScale=mobileButtonScale,
+		mobileButtonsDraggable=mobileButtonsDraggable,
+		mobileButtonPositions=mobileButtonPositions
 	}
 	if writefile then pcall(function() writefile("cursedPC.json",HS:JSONEncode(cfg)) end) end
 end
@@ -1406,6 +1419,73 @@ local function buildGui()
 	do local row=mkRow(miscTab,30);mkLabel(row,"Speed Key");mkKB(row,KB.SpeedToggle,function(k,isGp) if isGp then KB.SpeedToggle.gp=k;KB.SpeedToggle.kb=nil else KB.SpeedToggle.kb=k;KB.SpeedToggle.gp=nil end;saveConfig() end) end
 	do local row=mkRow(miscTab,30);mkLabel(row,"Lagger Key");mkKB(row,KB.LaggerToggle,function(k,isGp) if isGp then KB.LaggerToggle.gp=k;KB.LaggerToggle.kb=nil else KB.LaggerToggle.kb=k;KB.LaggerToggle.gp=nil end;saveConfig() end) end
 
+	-- Mobile Button Size Slider
+	do
+		local row=mkRow(miscTab,30);mkLabel(row,"Mobile Btn Size")
+		local sliderBG=Instance.new("Frame",row)
+		sliderBG.Size=UDim2.new(0,110,0,10)
+		sliderBG.Position=UDim2.new(1,-120,0.5,-5)
+		sliderBG.BackgroundColor3=Color3.fromRGB(12,22,12)
+		sliderBG.BorderSizePixel=0
+		sliderBG.ZIndex=3
+		Instance.new("UICorner",sliderBG).CornerRadius=UDim.new(1,0)
+
+		local sliderFill=Instance.new("Frame",sliderBG)
+		sliderFill.BackgroundColor3=Color3.fromRGB(0,180,0)
+		sliderFill.BorderSizePixel=0
+		sliderFill.ZIndex=4
+		Instance.new("UICorner",sliderFill).CornerRadius=UDim.new(1,0)
+
+		local knob=Instance.new("Frame",sliderBG)
+		knob.Size=UDim2.new(0,14,0,14)
+		knob.AnchorPoint=Vector2.new(0.5,0.5)
+		knob.BackgroundColor3=Color3.fromRGB(60,255,60)
+		knob.BorderSizePixel=0
+		knob.ZIndex=5
+		Instance.new("UICorner",knob).CornerRadius=UDim.new(1,0)
+
+		local MIN_SCALE,MAX_SCALE=0.5,1.5
+		local function updateSliderVisual()
+			local alpha=(mobileButtonScale-MIN_SCALE)/(MAX_SCALE-MIN_SCALE)
+			alpha=math.clamp(alpha,0,1)
+			sliderFill.Size=UDim2.new(alpha,0,1,0)
+			knob.Position=UDim2.new(alpha,0,0.5,0)
+		end
+		updateSliderVisual()
+
+		local dragging=false
+		local function setFromX(xPos)
+			local rel=math.clamp((xPos-sliderBG.AbsolutePosition.X)/sliderBG.AbsoluteSize.X,0,1)
+			mobileButtonScale=MIN_SCALE+rel*(MAX_SCALE-MIN_SCALE)
+			updateSliderVisual()
+			if updateMobileButtonSizes then updateMobileButtonSizes() end
+		end
+		sliderBG.InputBegan:Connect(function(i)
+			if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then
+				dragging=true
+				setFromX(i.Position.X)
+			end
+		end)
+		sliderBG.InputEnded:Connect(function(i)
+			if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then
+				dragging=false
+				saveConfig()
+			end
+		end)
+		UIS.InputChanged:Connect(function(i)
+			if dragging and (i.UserInputType==Enum.UserInputType.MouseMovement or i.UserInputType==Enum.UserInputType.Touch) then
+				setFromX(i.Position.X)
+			end
+		end)
+	end
+
+	-- Draggable mobile buttons toggle
+	setMobileDragVisual=mkToggle(miscTab,"Drag Mobile Btns",function(on)
+		mobileButtonsDraggable=on
+		if setMobileButtonsDraggableMode then setMobileButtonsDraggableMode(on) end
+		saveConfig()
+	end)
+
 	-- =================== DISCORD TAB ===================
 	do
 		local row=Instance.new("Frame",discordTab)
@@ -1480,6 +1560,9 @@ local function loadConfigKeys()
 	if cfg.laggerCarrySpeed and type(cfg.laggerCarrySpeed)=="number" then LAGGER_CARRY_SPEED=cfg.laggerCarrySpeed end
 	if cfg.autoTPHeight and type(cfg.autoTPHeight)=="number" then autoTPHeight=cfg.autoTPHeight end
 	if cfg.autoSwing~=nil then autoSwingEnabled=cfg.autoSwing==true end
+	if cfg.mobileButtonScale and type(cfg.mobileButtonScale)=="number" then mobileButtonScale=cfg.mobileButtonScale end
+	if cfg.mobileButtonsDraggable~=nil then mobileButtonsDraggable=cfg.mobileButtonsDraggable==true end
+	if cfg.mobileButtonPositions and type(cfg.mobileButtonPositions)=="table" then mobileButtonPositions=cfg.mobileButtonPositions end
 end
 local function loadConfigState()
 	local cfg=_savedCfg;if not cfg then return end
@@ -1490,6 +1573,7 @@ local function loadConfigState()
 	if laggerBox then laggerBox.Text=tostring(LAGGER_SPEED) end
 	if laggerCarryBox then laggerCarryBox.Text=tostring(LAGGER_CARRY_SPEED) end
 	if autoTPHeightBox then autoTPHeightBox.Text=tostring(autoTPHeight) end
+	if setMobileDragVisual then setMobileDragVisual(mobileButtonsDraggable) end
 	task.spawn(function()
 		task.wait(0.15)
 		if cfg.antiRagdoll then antiRagdollEnabled=true;if setAntiRagVisual then setAntiRagVisual(true) end;startAntiRagdoll() end
@@ -1526,35 +1610,80 @@ task.spawn(function()
     local container = Instance.new("Frame")
     container.Parent = mobileGui
     container.Name = "MobilePanel"
-    -- Increased height to 350 to ensure all buttons fit
     container.Size = UDim2.new(0, 200, 0, 250)
     container.BackgroundTransparency = 1
     container.AnchorPoint = Vector2.new(1, 1)
     container.Position = UDim2.new(1, -10, 1, -125)
 
+    local BASE_CELL_W, BASE_CELL_H, BASE_PAD = 85, 55, 8
     local grid = Instance.new("UIGridLayout")
     grid.Parent = container
-    grid.CellSize = UDim2.new(0, 85, 0, 55)
-    grid.CellPadding = UDim2.new(0, 8, 0, 8)
+    grid.CellSize = UDim2.new(0, BASE_CELL_W * mobileButtonScale, 0, BASE_CELL_H * mobileButtonScale)
+    grid.CellPadding = UDim2.new(0, BASE_PAD, 0, BASE_PAD)
     grid.FillDirection = Enum.FillDirection.Horizontal
     grid.HorizontalAlignment = Enum.HorizontalAlignment.Center
     grid.SortOrder = Enum.SortOrder.LayoutOrder
+
+    local function makeDraggable(btn, name)
+        local dragging,ds,sp,di = false,nil,nil,nil
+        btn.InputBegan:Connect(function(i)
+            if not mobileButtonsDraggable then return end
+            if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then
+                dragging=true; ds=i.Position; sp=btn.Position
+                i.Changed:Connect(function() if i.UserInputState==Enum.UserInputState.End then dragging=false end end)
+            end
+        end)
+        btn.InputChanged:Connect(function(i)
+            if i.UserInputType==Enum.UserInputType.MouseMovement or i.UserInputType==Enum.UserInputType.Touch then di=i end
+        end)
+        UIS.InputChanged:Connect(function(i)
+            if not mobileButtonsDraggable then return end
+            if i==di and dragging then
+                local delta = i.Position - ds
+                btn.Position = UDim2.new(sp.X.Scale, sp.X.Offset + delta.X, sp.Y.Scale, sp.Y.Offset + delta.Y)
+            end
+        end)
+        UIS.InputEnded:Connect(function(i)
+            if dragging and (i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch) then
+                dragging=false
+                mobileButtonPositions[name] = {
+                    xS=btn.Position.X.Scale, xO=btn.Position.X.Offset,
+                    yS=btn.Position.Y.Scale, yO=btn.Position.Y.Offset
+                }
+                saveConfig()
+            end
+        end)
+    end
 
     local function makeBtn(text, callback)
         local btn = Instance.new("TextButton")
         btn.Name = text
         btn.Text = text
         btn.Font = Enum.Font.SourceSansBold
-        btn.TextSize = 14
+        btn.TextSize = 14 * mobileButtonScale
         btn.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
         btn.TextColor3 = Color3.new(1, 1, 1)
         btn.Parent = container
-        
+        btn.ZIndex = 2
+
         local corner = Instance.new("UICorner")
         corner.CornerRadius = UDim.new(0, 12)
         corner.Parent = btn
-        
-        btn.MouseButton1Click:Connect(callback)
+
+        local saved = mobileButtonPositions[text]
+        if saved then
+            btn.Position = UDim2.new(saved.xS, saved.xO, saved.yS, saved.yO)
+            btn.Size = UDim2.new(0, BASE_CELL_W * mobileButtonScale, 0, BASE_CELL_H * mobileButtonScale)
+            btn.LayoutOrder = 1000
+        end
+
+        mobileBtnFrames[text] = btn
+        makeDraggable(btn, text)
+
+        btn.MouseButton1Click:Connect(function()
+            if mobileButtonsDraggable then return end
+            callback()
+        end)
     end
 
     -- Buttons
@@ -1571,11 +1700,7 @@ task.spawn(function()
         if autoRightEnabled then queueAutoRightStart() else stopAutoRight() end 
     end)
     makeBtn("CARRY SPD", function() toggleCarryMode() end)
-    
-    -- The missing button!
     makeBtn("INSTA RESET", function() cursedInstaReset() end)
-    
-    -- Lagger Buttons
     makeBtn("LAGGER CARRY", function() 
         if not laggerToggled or laggerPhase ~= 2 then
             laggerToggled = true
@@ -1584,7 +1709,6 @@ task.spawn(function()
             if refreshSpeedModeLabel then refreshSpeedModeLabel() end
         end
     end)
-    
     makeBtn("LAGGER MODE", function() 
         if not laggerToggled or laggerPhase ~= 1 then
             laggerToggled = true
@@ -1593,4 +1717,33 @@ task.spawn(function()
             if refreshSpeedModeLabel then refreshSpeedModeLabel() end
         end
     end)
+
+    updateMobileButtonSizes = function()
+        grid.CellSize = UDim2.new(0, BASE_CELL_W * mobileButtonScale, 0, BASE_CELL_H * mobileButtonScale)
+        for name,btn in pairs(mobileBtnFrames) do
+            btn.TextSize = 14 * mobileButtonScale
+            if mobileButtonPositions[name] then
+                btn.Size = UDim2.new(0, BASE_CELL_W * mobileButtonScale, 0, BASE_CELL_H * mobileButtonScale)
+            end
+        end
+    end
+
+    setMobileButtonsDraggableMode = function(on)
+        for name,btn in pairs(mobileBtnFrames) do
+            local existingStroke = btn:FindFirstChild("DragStroke")
+            if on then
+                if not existingStroke then
+                    local s = Instance.new("UIStroke",btn)
+                    s.Name="DragStroke"
+                    s.Color=Color3.fromRGB(60,255,60)
+                    s.Thickness=2
+                end
+            else
+                if existingStroke then existingStroke:Destroy() end
+            end
+        end
+    end
+
+    updateMobileButtonSizes()
+    setMobileButtonsDraggableMode(mobileButtonsDraggable)
 end)
